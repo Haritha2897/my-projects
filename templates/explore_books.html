@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center font-weight-bold">Explore Books</h2>
+
+    <!-- Internal CSS -->
+    <style>
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card-img-container {
+            width: 100%;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #ddd;
+            overflow: hidden;
+        }
+
+        .card-img-top {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .card-body {
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-text {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .category-section {
+            margin-bottom: 2rem;
+        }
+
+        .category-heading {
+            text-transform: capitalize;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 0.5rem;
+        }
+
+        .category-select {
+            margin-bottom: 1.5rem;
+            width: 100%;
+        }
+
+        .search-results-message {
+            margin-top: 20px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .no-results-message {
+            margin-top: 20px;
+            font-weight: bold;
+            color: red;
+            display: none;
+        }
+
+        .search-form input#searchInput {
+        width: 100%; /* Adjust width as needed */
+        max-width: 600px; 
+    }
+    </style>
+
+    <!-- Search Form -->
+    <div class="search-form mb-4">
+        <form id="searchForm" class="form-inline justify-content-center">
+            <input type="text" class="form-control mr-2" id="searchInput" placeholder="Search by book name or author">
+            <button type="button" class="btn btn-primary" onclick="filterBooks()">Search</button>
+        </form>
+    </div>
+
+    <div class="category-select">
+        <label for="category-select" class="form-label">Select Category:</label>
+        <select id="category-select" class="form-select" onchange="filterBooks()">
+            <option value="all">All Categories</option>
+            {% for category in books_by_category.keys %}
+                <option value="{{ category|slugify }}">{{ category }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="search-results-message" id="searchResultsMessage">Your search results are:</div>
+    <div class="no-results-message" id="noResultsMessage">No books found for your search criteria.</div>
+
+    {% for category, books in books_by_category.items %}
+    <div class="category-section" id="{{ category|slugify }}">
+        <h3 class="category-heading">{{ category }}</h3>
+        <div class="row">
+            {% for book in books %}
+            <div class="col-md-3 mb-4 book-item">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-img-container">
+                        {% if book.image %}
+                            <img src="{{ book.image.url }}" class="card-img-top" alt="{{ book.title }}">
+                        {% else %}
+                            <img src="{% static 'images/default_image.jpg' %}" class="card-img-top" alt="Default Image">
+                        {% endif %}
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ book.title }}</h5>
+                        <p class="card-text">by {{ book.author }}</p>
+                        <a href="{% url 'book_detail' book.pk %}" class="btn btn-primary mt-auto">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- JavaScript to filter books by category and search query -->
+    <script>
+        function filterBooks() {
+            var searchInput = document.getElementById('searchInput').value.toLowerCase();
+            var selectedCategory = document.getElementById('category-select').value;
+            var bookItems = document.querySelectorAll('.book-item');
+            var searchResultsMessage = document.getElementById('searchResultsMessage');
+            var noResultsMessage = document.getElementById('noResultsMessage');
+            var hasResults = false;
+
+            bookItems.forEach(function(bookItem) {
+                var bookTitle = bookItem.querySelector('.card-title').textContent.toLowerCase();
+                var bookAuthor = bookItem.querySelector('.card-text').textContent.toLowerCase();
+                var bookCategory = bookItem.closest('.category-section').id.toLowerCase();
+
+                var matchesSearch = bookTitle.includes(searchInput) || bookAuthor.includes(searchInput);
+                var matchesCategory = selectedCategory === 'all' || bookCategory === selectedCategory;
+
+                if (matchesSearch && matchesCategory) {
+                    bookItem.style.display = '';
+                    hasResults = true;
+                } else {
+                    bookItem.style.display = 'none';
+                }
+            });
+
+            // Display or hide the search results and no results messages based on results
+            if (searchInput || selectedCategory !== 'all') {
+                searchResultsMessage.style.display = 'block';
+                noResultsMessage.style.display = hasResults ? 'none' : 'block';
+            } else {
+                searchResultsMessage.style.display = 'none';
+                noResultsMessage.style.display = 'none';
+            }
+        }
+
+        document.getElementById('searchInput').addEventListener('keyup', filterBooks);
+    </script>
+</div>
+{% endblock %}

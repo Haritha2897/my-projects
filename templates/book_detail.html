@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>{{ book.title }}</h2>
+            {% if book.image %}
+            <img src="{{ book.image.url }}" alt="{{ book.title }}" class="img-fluid book-image mb-3">
+            {% endif %}
+            <p><strong>Author:</strong> {{ book.author }}</p>
+            <p><strong>Category:</strong> {{ book.category }}</p>
+            <p><strong>Summary:</strong> {{ book.summary }}</p>
+            <p><strong>Publication Date:</strong> {{ book.publication_date }}</p>
+            <a href="{{ book.pdf.url }}" class="btn btn-primary">View PDF</a>
+        </div>
+        <div class="col-md-4">
+            <h3>Reviews</h3>
+            <ul class="list-group">
+                {% for review in reviews %}
+                <li class="list-group-item">
+                    <p>{{ review.comment }}</p>
+                    <p><strong>Rating:</strong> {{ review.rating }}</p>
+                    <small>by {{ review.user.username }}</small>
+                </li>
+                {% empty %}
+                <li class="list-group-item">No reviews yet.</li>
+                {% endfor %}
+            </ul>
+            {% if user.is_authenticated %}
+            <a href="{% url 'review_book' book.pk %}" class="btn btn-success mt-3">Write a Review</a>
+            {% else %}
+            <p class="mt-3"><a href="{% url 'login' %}">Log in</a> to write a review.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

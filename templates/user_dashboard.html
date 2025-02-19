@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Welcome, {{ user.username }}!</h2>
+
+    <!-- Add Book to Wishlist Form -->
+    <h3>Add Book to Wishlist</h3>
+    <form method="post" action="{% url 'user_dashboard' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="book">Select a Book:</label>
+            <select id="book" name="book_id" class="form-control">
+                {% for book in books %}
+                <option value="{{ book.id }}">{{ book.title }} by {{ book.author }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" name="action" value="add_to_wishlist" class="btn btn-primary mt-2">Add to Wishlist</button>
+    </form>
+
+       <!-- Wishlist Section -->
+       <h3>Your Wishlist</h3>
+       <form method="post" action="{% url 'user_dashboard' %}">
+           {% csrf_token %}
+           <table class="table">
+               <thead>
+                   <tr>
+                       <th>Book Title</th>
+                       <th>Author</th>
+                       <th>Mark as Read</th>
+                       <th>Remove</th>
+                   </tr>
+               </thead>
+               <tbody>
+                   {% for wishlist_item in wishlist_items %}
+                   <tr>
+                       <td>{{ wishlist_item.book.title }}</td>
+                       <td>{{ wishlist_item.book.author }}</td>
+                       <td>
+                           <form method="post" action="{% url 'mark_as_read' wishlist_item.book.id %}">
+                               {% csrf_token %}
+                               <input type="checkbox" name="mark_as_read" 
+                                   {% if wishlist_item.is_read %}checked{% endif %} 
+                                   onchange="this.form.submit()" />
+                           </form>
+                       </td>
+                       <td>
+                           <a href="{% url 'remove_from_wishlist' wishlist_item.book.id %}" class="btn btn-sm btn-danger">Remove</a>
+                       </td>
+                   </tr>
+                   {% empty %}
+                   <tr>
+                       <td colspan="4">No items in your wishlist.</td>
+                   </tr>
+                   {% endfor %}
+               </tbody>
+           </table>
+       </form>
+
+    
+
+    <!-- User Reviews Section -->
+    <h3>Your Reviews</h3>
+    <p>Write reviews.Go to <a href="{% url 'explore_books' %}">Explore Books</a></p>
+    <ul class="list-group">
+        {% for review in reviews %}
+        <li class="list-group-item">
+            <p>{{ review.comment }}</p>
+            <p><strong>Rating:</strong> {{ review.rating }}</p>
+            <small>on {{ review.book.title }}</small>
+            <div>
+                <a href="{% url 'edit_review' review.pk %}" class="btn btn-sm btn-info">Edit</a>
+                <a href="{% url 'delete_review' review.pk %}" class="btn btn-sm btn-danger">Delete</a>
+            </div>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No reviews submitted yet.</li>
+        {% endfor %}
+    </ul>
+
+ 
+</div>
+{% endblock %}

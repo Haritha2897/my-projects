@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Internal CSS -->
+<style>
+    .jumbotron {
+        background-color: #f8f9fa;
+        color: #000000;
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+
+    .card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-img-container {
+        width: 100%;
+        height: 250px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-bottom: 1px solid #ddd;
+        overflow: hidden;
+        background-color: #f8f9fa;
+    }
+
+    .card-img-container img {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: cover;
+    }
+
+    .card-body {
+        padding: 1rem;
+        text-align: center;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-text {
+        font-size: 1rem;
+        color: #555;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 2rem;
+        font-size: 2rem;
+        color: #333;
+    }
+
+    .section-title {
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        font-size: 1.75rem;
+        font-weight: bold;
+        text-align: center;
+        color: #333;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="jumbotron">
+        <h1 class="display-4 text-center">Welcome to Library!</h1>
+        <p class="lead text-center">Explore a wide collection of books and write your reviews.</p>
+        <hr class="my-4">
+        <h3 class="text-center">About Us</h3>
+        <p>Welcome to our virtual library, where exploration meets knowledge! At Library, we are passionate about connecting readers with a diverse range of books that inspire, educate, and entertain.</p>
+        <strong>Our Mission</strong>
+        <p>Our mission is to foster a love for reading and learning among our community members. We aim to provide access to a rich collection of books spanning various genres and topics, catering to readers of all ages and interests.</p>
+    </div>
+
+    <!-- New Arrivals Section -->
+    <h2 class="section-title">New Arrivals</h2>
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-img-container">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgYT0HiZnXvvGWD1u7AXcvC2js_k-wamnMYQ&s" class="card-img-top" alt="Book 1">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">The Heiress</h5>
+                    <p class="card-text">by Rachel Hawkins</p>
+                    <a href="{% url 'book_detail' 18 %}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-img-container">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyY2ZV7tWVYSXy4em5SxyTUVl0x5OoI4ZumA&s" class="card-img-top" alt="Book 2">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Funny Story</h5>
+                    <p class="card-text">by Emily Henry</p>
+                    <a href="{% url 'book_detail' 16 %}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-img-container">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNsJ8mTFW2zTPQ2SHzDIVImOxWjWVQ8ld6SA&s" class="card-img-top" alt="Book 3">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Knife</h5>
+                    <p class="card-text">by Salman Rushdie</p>
+                    <a href="{% url 'book_detail' 17 %}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Books Section -->
+    <h2 class="section-title">Featured Books</h2>
+    <div class="row">
+        {% for book in featured_books %}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-img-container">
+                    {% if book.image %}
+                        <img src="{{ book.image.url }}" class="card-img-top" alt="{{ book.title }}">
+                    {% else %}
+                        <img src="{% static 'path/to/default_image.jpg' %}" class="card-img-top" alt="Default Image">
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ book.title }}</h5>
+                    <p class="card-text">by {{ book.author }}</p>
+                    <a href="{% url 'book_detail' book.pk %}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

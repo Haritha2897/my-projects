@@ -1,0 +1,66 @@
+/* Resetting default margins and padding for all elements */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styles */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures full height of viewport */
+    margin: 0;
+    font-family: Arial, sans-serif; /* Adjust font as needed */
+    background-color: #f0f0f0; /* Page background color */
+}
+
+/* Main content container */
+main {
+    flex: 1; /* Takes remaining space */
+}
+
+/* Header styles */
+header {
+    background-color: #343a40; /* Dark background color */
+    color: #ffffff; /* White text */
+    padding: 10px 20px; /* Padding around content */
+}
+
+/* Logo styles */
+.logo img {
+    height: 40px; /* Adjust logo height */
+    width: auto; /* Maintain aspect ratio */
+    vertical-align: middle; /* Align logo vertically */
+}
+
+/* Footer styles */
+footer {
+    background-color: #343a40; /* Dark background color */
+    color: #ffffff; /* White text */
+    padding: 20px 0; /* Padding top and bottom */
+    text-align: center; /* Center align content */
+    width: 100%; /* Full width */
+    position: fixed; /* Fixed position at the bottom */
+    bottom: 0; /* Stick to the bottom */
+}
+
+/* Container inside footer */
+footer .container {
+    max-width: 960px; /* Max width for content */
+    margin: 0 auto; /* Center content horizontally */
+}
+
+/* Social media links */
+footer .social-media a {
+    color: #ffffff; /* White text */
+    margin: 0 10px; /* Spacing between links */
+    text-decoration: none; /* Remove underline */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .logo img {
+        height: 30px; /* Adjust logo size for smaller screens */
+    }
+}
